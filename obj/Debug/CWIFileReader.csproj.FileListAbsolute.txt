@@ -1,0 +1,7 @@
+E:\Project\TestCWI\bin\Debug\CWIFileReader.exe.config
+E:\Project\TestCWI\bin\Debug\CWIFileReader.exe
+E:\Project\TestCWI\bin\Debug\CWIFileReader.pdb
+E:\Project\TestCWI\obj\Debug\CWIFileReader.csprojAssemblyReference.cache
+E:\Project\TestCWI\obj\Debug\CWIFileReader.csproj.CoreCompileInputs.cache
+E:\Project\TestCWI\obj\Debug\CWIFileReader.exe
+E:\Project\TestCWI\obj\Debug\CWIFileReader.pdb

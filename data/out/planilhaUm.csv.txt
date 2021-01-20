@@ -1,0 +1,4 @@
+quantidade de clientes: 2
+quantidade de vendedores:2
+venda mais cara: 10
+pior vendedor: nome: Paulo cpf: 3245678865434
