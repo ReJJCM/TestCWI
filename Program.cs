@@ -37,66 +37,67 @@ namespace CWIFileReader
         }
         static void Main(string[] args)
         {
-
-            var files = Directory.GetFiles("../../data/in", @"*.csv");
-
-            for (int i = 0; i < files.Count(); i++)
+            if (Directory.Exists("../../data/in"))
             {
+                var files = Directory.GetFiles("../../data/in", @"*.csv");
 
-                string filename = files[i].Substring(files[i].IndexOf("\\") + 1);
-                List<Sale> salesInTheFile = new List<Sale>();
-                List<Salesman> salesmanInTheFile = new List<Salesman>();
-                int numberOfClientsInTheFile = 0;
-                
-                using (StreamReader reader = new StreamReader(files[i]))
+                for (int i = 0; i < files.Count(); i++)
                 {
 
-                    while (!reader.EndOfStream)
+                    string filename = files[i].Substring(files[i].IndexOf("\\") + 1);
+                    List<Sale> salesInTheFile = new List<Sale>();
+                    List<Salesman> salesmanInTheFile = new List<Salesman>();
+                    int numberOfClientsInTheFile = 0;
+
+                    using (StreamReader reader = new StreamReader(files[i]))
                     {
-                     
-                        string line = reader.ReadLine();
-                        try
+
+                        while (!reader.EndOfStream)
                         {
-                            string[] lineValues = line.Split('ç');
-                            if(lineValues.Count() > 0)
+
+                            string line = reader.ReadLine();
+                            try
                             {
-                               if(lineValues[0] == "001")
-                               {
-                                    if(lineValues.Count() == 4) // Verify if it has all information or discard the salesman from the count
+                                string[] lineValues = line.Split('ç');
+                                if (lineValues.Count() > 0)
+                                {
+                                    if (lineValues[0] == "001")
                                     {
-                                        Salesman salesman = new Salesman()
+                                        if (lineValues.Count() == 4) // Verify if it has all information or discard the salesman from the count
                                         {
-                                            CPF = lineValues[1],
-                                            Name = lineValues[2],
-                                            Salary=lineValues[3],
-                                            SalesList = new List<Sale>(),
-                                        };
-
-                                        salesmanInTheFile.Add(salesman);
-                                    }
-                               }
-                               else if (lineValues[0] == "002")
-                               {
-                                    numberOfClientsInTheFile++;
-                               } 
-                               else if (lineValues[0] == "003")
-                               {
-                                    if (lineValues.Count() == 4) //Check if it has all the sale information or discard the data
-                                    { 
-
-                                        float finalPrice = 0f;
-                                        string lineTwoValueTwoFormated = lineValues[2].Substring(1, lineValues[2].ToString().Length - 2);
-                                        string[] saleItemsInformation = lineTwoValueTwoFormated.Split(',');
-                                        foreach(string item in saleItemsInformation)
-                                        {
-                                            string[] itemInformation = item.Split('-');
-                                            if (itemInformation.Count() == 3)//Check if it has all the sale information or discard the data
+                                            Salesman salesman = new Salesman()
                                             {
-                                                var price = float.Parse(itemInformation[2].Replace('.',',')) * Convert.ToInt32(itemInformation[1]);
-                                                finalPrice += price;
-                                            }
+                                                CPF = lineValues[1],
+                                                Name = lineValues[2],
+                                                Salary = lineValues[3],
+                                                SalesList = new List<Sale>(),
+                                            };
+
+                                            salesmanInTheFile.Add(salesman);
                                         }
-                                        
+                                    }
+                                    else if (lineValues[0] == "002")
+                                    {
+                                        numberOfClientsInTheFile++;
+                                    }
+                                    else if (lineValues[0] == "003")
+                                    {
+                                        if (lineValues.Count() == 4) //Check if it has all the sale information or discard the data
+                                        {
+
+                                            float finalPrice = 0f;
+                                            string lineTwoValueTwoFormated = lineValues[2].Substring(1, lineValues[2].ToString().Length - 2);
+                                            string[] saleItemsInformation = lineTwoValueTwoFormated.Split(',');
+                                            foreach (string item in saleItemsInformation)
+                                            {
+                                                string[] itemInformation = item.Split('-');
+                                                if (itemInformation.Count() == 3)//Check if it has all the sale information or discard the data
+                                                {
+                                                    var price = float.Parse(itemInformation[2].Replace('.', ',')) * Convert.ToInt32(itemInformation[1]);
+                                                    finalPrice += price;
+                                                }
+                                            }
+
                                             Sale sale = new Sale()
                                             {
                                                 SaleId = lineValues[1],
@@ -105,32 +106,37 @@ namespace CWIFileReader
                                             };
 
                                             salesInTheFile.Add(sale);
+                                        }
                                     }
-                               }
-                               else
-                               {
-                                    continue; //Invalid identifier
-                               }
+                                    else
+                                    {
+                                        continue; //Invalid identifier
+                                    }
+
+                                }
 
                             }
-                           
-                        }
-                        catch (Exception msg)
-                        {
-                            Console.WriteLine(msg);
+                            catch (Exception msg)
+                            {
+                                Console.WriteLine(msg);
+                            }
                         }
                     }
-                }
 
-                AddSalesToSalesMan(salesInTheFile, salesmanInTheFile);
-                string mostExpansiveSale = GetMostExpansiveSale(salesInTheFile);
-                Salesman worstSalesman = GetWorstSalesman(salesmanInTheFile);
-                string[] lines = { "quantidade de clientes: " + numberOfClientsInTheFile, "quantidade de vendedores:" + salesInTheFile.Count(),
+                    AddSalesToSalesMan(salesInTheFile, salesmanInTheFile);
+                    string mostExpansiveSale = GetMostExpansiveSale(salesInTheFile);
+                    Salesman worstSalesman = GetWorstSalesman(salesmanInTheFile);
+                    string[] lines = { "quantidade de clientes: " + numberOfClientsInTheFile, "quantidade de vendedores:" + salesInTheFile.Count(),
                                      "venda mais cara: " + mostExpansiveSale, "pior vendedor: " + "nome: " + worstSalesman.Name + " cpf: " + worstSalesman.CPF};
-                // WriteAllLines creates a file, writes a collection of strings to the file,
-                // and then closes the file.  You do NOT need to call Flush() or Close().
-                System.IO.File.WriteAllLines(@"../../data/out/" + filename + ".txt", lines);
+                    // WriteAllLines creates a file, writes a collection of strings to the file,
+                    // and then closes the file.  You do NOT need to call Flush() or Close().
+                    System.IO.File.WriteAllLines(@"../../data/out/" + filename + ".txt", lines);
 
+                }
+            }
+            else
+            {
+                Console.WriteLine("The directory doesn't exist.");
             }
         }
 
